@@ -1,0 +1,10 @@
+.task {
+  background-color: teal;
+  margin: 10px;
+}
+.global {
+  margin: 0% 10%;
+}
+.flex {
+  display: flex !important;
+}
