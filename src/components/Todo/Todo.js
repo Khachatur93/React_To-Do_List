@@ -1,43 +1,24 @@
 import React, { Component } from "react";
+import { Button, Container, Row, Col } from "react-bootstrap";
+import Tasks from "../Tasks/Tasks";
+import NewTask from "../NewTask/NewTask";
+import Confirm from "../Confirm";
 
-import {
-  Button,
-  InputGroup,
-  FormControl,
-  Container,
-  Row,
-  Card,
-  Col,
-} from "react-bootstrap";
-import "bootstrap/dist/css/bootstrap.min.css";
-import idGenerator from "./idGenerator";
-///////////////     ////////////////////     /////////////////////////////         ///////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 export default class Todo extends Component {
   state = {
-    inputValue: "",
     tasks: [],
+    showConfirm: false,
     selectedTasks: new Set(),
+    showNewTaskModal: false,
   };
-  handleChang = (event) => {
-    // save to state  input values
-    this.setState({
-      inputValue: event.target.value,
-    });
-  };
-  addTask = () => {
-    // add task
-    const inputValue = this.state.inputValue.trim();
+
+  addTask = (newTask) => {
     const { tasks } = this.state;
-    if (!inputValue) {
-      return;
-    }
-    const newTask = {
-      _id: idGenerator(),
-      title: inputValue,
-    };
+
     this.setState({
       tasks: [...tasks, newTask],
-      inputValue: "",
+      showNewTaskModal: false,
     });
   };
   deleteTask = (taskId) => {
@@ -75,11 +56,33 @@ export default class Todo extends Component {
     this.setState({
       tasks: newTasks,
       selectedTasks: new Set(),
+      showConfirm: false,
     });
   };
-
+  toggleConfirm = () => {
+    // open and close modal for delete
+    this.setState({ showConfirm: !this.state.showConfirm });
+  };
+  selectAll = () => {
+    // select all tasks
+    const { tasks } = this.state;
+    const id = tasks.map((task) => task._id);
+    this.setState({
+      selectedTasks: new Set(id),
+    });
+  };
+  deselectAll = () => {
+    // deselect all tasks
+    this.setState({
+      selectedTasks: new Set(),
+    });
+  };
+  openNewTaskModal = () => {
+    // open modal for add new task
+    this.setState({ showNewTaskModal: !this.state.showNewTaskModal });
+  };
   render() {
-    const { tasks, inputValue, selectedTasks } = this.state;
+    const { tasks, selectedTasks, showConfirm, showNewTaskModal } = this.state;
     let list = tasks.map((task) => {
       return (
         <Col
@@ -89,33 +92,15 @@ export default class Todo extends Component {
           sm={6}
           xs={12}
           style={{ margin: "  5px  0px" }}
+          key={task._id}
         >
-          <Card key={task._id}>
-            <Card.Header>
-              <input
-                type="checkbox"
-                onClick={() => this.toggleTask(task._id)}
-                style={{ marginRight: "8px" }}
-              />
-              {task.title}
-            </Card.Header>
-            <Card.Body>
-              <Card.Title></Card.Title>
-              <Card.Text>Some quick</Card.Text>
-              <Button
-                onClick={() => this.deleteTask(task._id)}
-                variant="danger"
-              >
-                Delete
-              </Button>
-              <Button
-                variant="warning"
-                style={{ marginLeft: "5px", padding: "6px 22px" }}
-              >
-                Edit
-              </Button>
-            </Card.Body>
-          </Card>
+          <Tasks
+            task={task}
+            selectedTasks={selectedTasks}
+            toggleTask={this.toggleTask}
+            deleteTask={this.deleteTask}
+            selected={selectedTasks.has(task._id)}
+          />
         </Col>
       );
     });
@@ -125,34 +110,60 @@ export default class Todo extends Component {
         <Container>
           <Row>
             <Col>
-              <h1>Todo list</h1>
-              <InputGroup className="mb-3">
-                <FormControl
-                  placeholder="Enter task name"
-                  onChange={this.handleChang}
-                  value={inputValue}
-                />
-                <InputGroup.Append>
-                  <Button
-                    type="button"
-                    class="btn btn-primary"
-                    onClick={this.addTask}
-                  >
-                    Add task
-                  </Button>
-                </InputGroup.Append>
-              </InputGroup>
+              <h1>Todo list App</h1>
+              <NewTask
+                showNewTaskModal={showNewTaskModal}
+                selectedTasks={selectedTasks}
+                addTask={this.addTask}
+                openNewTaskModal={this.openNewTaskModal}
+              />
             </Col>
           </Row>
-          <Button
-            onClick={this.deleteSelect}
-            variant="danger"
-            disabled={!selectedTasks.size}
-          >
-            delete select
-          </Button>
+          <Col className="mb-5">
+            <Button
+              disabled={!!selectedTasks.size}
+              onClick={this.openNewTaskModal}
+              variant="primary "
+              // className="m-4"
+            >
+              Add Task
+            </Button>
+            <Button
+              onClick={this.selectAll}
+              variant="warning"
+              disabled={!!selectedTasks.size}
+              className="m-5"
+            >
+              Select all
+            </Button>
+            <Button
+              className="m-5"
+              onClick={this.deselectAll}
+              disabled={selectedTasks.size === 0}
+              variant="success"
+            >
+              Deselect All
+            </Button>
+
+            <Button
+              onClick={this.toggleConfirm}
+              variant="danger"
+              disabled={!selectedTasks.size}
+              className="m-5"
+            >
+              Delete Select
+            </Button>
+          </Col>
+
           <Row>{list}</Row>
         </Container>
+        {showConfirm && (
+          <Confirm
+            onClose={this.toggleConfirm}
+            onConfirm={this.deleteSelect}
+            selectedTasks={selectedTasks.size}
+          />
+        )}
       </div>
     );
   }
