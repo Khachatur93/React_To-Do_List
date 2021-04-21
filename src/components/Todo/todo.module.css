@@ -8,3 +8,6 @@
 .flex {
   display: flex !important;
 }
+.marginLeft {
+  margin-left: 5px;
+}
