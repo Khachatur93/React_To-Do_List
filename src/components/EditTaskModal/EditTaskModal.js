@@ -4,13 +4,16 @@ import PropTypes from "prop-types";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { formatDate } from "../../utility/utility";
+export default class EditTaskModal extends PureComponent {
+  constructor(props) {
+    super(props);
+    const { date } = props.editModal;
+    this.state = {
+      ...props.editModal,
+      date: date ? new Date(date) : new Date(),
+    };
+  }
 
-export default class NewTask extends PureComponent {
-  state = {
-    title: "",
-    description: "",
-    date: new Date(),
-  };
   handleChang = (value, name) => {
     // save to state  input values
 
@@ -30,53 +33,49 @@ export default class NewTask extends PureComponent {
     if (!title) {
       return;
     }
-    const { date } = this.state;
-    const newTask = {
-      title: title,
-      description: description,
-      date: formatDate(date.toISOString()),
-    };
-    this.setState({
-      title: "",
-      description: "",
-    });
 
-    this.props.addTask(newTask);
+    this.props.saveEdit({
+      _id: this.state._id,
+      description,
+      title,
+      date: formatDate(this.state.date.toISOString()),
+    });
   };
   handleChangDate = (value) => {
     // save new Task Data
     this.setState({ date: value || new Date() });
   };
-
   render() {
-    const { showNewTaskModal, openNewTaskModal } = this.props;
+    const { editTask } = this.props;
+    const { title, description } = this.state;
     return (
       <Modal
-        show={showNewTaskModal}
-        onHide={openNewTaskModal}
+        show={true}
+        onHide={editTask}
         size="lg"
         aria-labelledby="contained-modal-title-center"
         centered
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-center">
-            Add new task
+            Edit Task Modal
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <InputGroup className="mb-3">
             <FormControl
               placeholder="Title"
+              value={title}
               onChange={(event) =>
                 this.handleChang(event.target.value, "title")
               }
               onKeyDown={this.handleKeyDown}
             />
           </InputGroup>
-
           <Form.Control
             as="textarea"
             placeholder="Description"
+            value={description}
             onChange={(event) =>
               this.handleChang(event.target.value, "description")
             }
@@ -93,11 +92,12 @@ export default class NewTask extends PureComponent {
           <Button
             type="button"
             className="btn btn-primary"
+            variant="success"
             onClick={this.handleSubmit}
           >
-            Add
+            Save
           </Button>
-          <Button variant="success" onClick={openNewTaskModal}>
+          <Button variant="primary" onClick={editTask}>
             Cancel
           </Button>
         </Modal.Footer>
@@ -105,8 +105,9 @@ export default class NewTask extends PureComponent {
     );
   }
 }
-NewTask.propTypes = {
-  addTask: PropTypes.func.isRequired,
-  showNewTaskModal: PropTypes.bool.isRequired,
+EditTaskModal.propTypes = {
   openNewTaskModal: PropTypes.func.isRequired,
+  editModal: PropTypes.object.isRequired,
+  editTask: PropTypes.func.isRequired,
+  saveEdit: PropTypes.func.isRequired,
 };

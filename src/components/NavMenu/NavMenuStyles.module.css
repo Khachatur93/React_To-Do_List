@@ -1,0 +1,19 @@
+.navStyle {
+  text-decoration: none;
+  font-size: 18px;
+  margin-left: 15px;
+}
+.navStyle:hover {
+  cursor: pointer;
+  color: white;
+}
+.home {
+  color: white;
+  text-decoration: none;
+  font-size: 23px;
+  margin-left: 10px;
+}
+.home:hover {
+  cursor: pointer;
+  color: white;
+}

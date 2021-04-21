@@ -1,33 +1,96 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import { Button, Container, Row, Col } from "react-bootstrap";
 import Tasks from "../Tasks/Tasks";
 import NewTask from "../NewTask/NewTask";
 import Confirm from "../Confirm";
-
+import EditTaskModal from "../EditTaskModal/EditTaskModal";
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-export default class Todo extends Component {
+export default class Todo extends PureComponent {
   state = {
     tasks: [],
     showConfirm: false,
     selectedTasks: new Set(),
     showNewTaskModal: false,
+    editModal: null,
   };
+  componentDidMount() {
+    fetch("http://localhost:3001/task", {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    })
+      .then(async (response) => {
+        const res = await response.json();
+        if (response.status >= 400 && response.status < 600) {
+          if (res.error) {
+            throw res.error;
+          } else {
+            throw new Error("Something went wrong !");
+          }
+        }
+        this.setState({
+          tasks: res,
+        });
+      })
 
+      .catch((error) => {
+        console.log(error, "error");
+      });
+  }
+  ////////////////////////////////////////////////////
   addTask = (newTask) => {
-    const { tasks } = this.state;
+    fetch("http://localhost:3001/task", {
+      method: "POST",
+      body: JSON.stringify(newTask),
+      headers: { "Content-Type": "application/json" },
+    })
+      .then(async (response) => {
+        const res = await response.json();
 
-    this.setState({
-      tasks: [...tasks, newTask],
-      showNewTaskModal: false,
-    });
+        if (response.status >= 400 && response.status < 600) {
+          if (res.error) {
+            throw res.error;
+          } else {
+            throw new Error("Something went wrong !");
+          }
+        }
+        const tasks = [...this.state.tasks, res];
+        this.setState({
+          tasks,
+          showNewTaskModal: false,
+        });
+      })
+
+      .catch((error) => {
+        console.log(error, "error");
+      });
   };
   deleteTask = (taskId) => {
     // delete task
-    const { tasks } = this.state;
-    const todo = tasks.filter((task) => taskId !== task._id);
-    this.setState({
-      tasks: todo,
-    });
+
+    fetch(`http://localhost:3001/task/${taskId}`, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+    })
+      .then(async (response) => {
+        const res = await response.json();
+
+        if (response.status >= 400 && response.status < 600) {
+          if (res.error) {
+            throw res.error;
+          } else {
+            throw new Error("Something went wrong !");
+          }
+        }
+
+        const todo = this.state.tasks.filter((task) => taskId !== task._id);
+        this.setState({
+          tasks: todo,
+        });
+      })
+
+      .catch((error) => {
+        console.log(error, "error");
+      });
   };
   toggleTask = (taskId) => {
     // add to state all checked tasks
@@ -44,20 +107,39 @@ export default class Todo extends Component {
   };
   deleteSelect = () => {
     // delete all checked tasks
-
     const { selectedTasks, tasks } = this.state;
+    const body = { tasks: [...selectedTasks] };
+    fetch("http://localhost:3001/task", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    })
+      .then(async (response) => {
+        const res = await response.json();
 
-    const newTasks = tasks.filter((task) => {
-      if (selectedTasks.has(task._id)) {
-        return false;
-      }
-      return true;
-    });
-    this.setState({
-      tasks: newTasks,
-      selectedTasks: new Set(),
-      showConfirm: false,
-    });
+        if (response.status >= 400 && response.status < 600) {
+          if (res.error) {
+            throw res.error;
+          } else {
+            throw new Error("Something went wrong !");
+          }
+        }
+        const newTasks = tasks.filter((task) => {
+          if (selectedTasks.has(task._id)) {
+            return false;
+          }
+          return true;
+        });
+        this.setState({
+          tasks: newTasks,
+          selectedTasks: new Set(),
+          showConfirm: false,
+        });
+      })
+
+      .catch((error) => {
+        console.log(error, "error");
+      });
   };
   toggleConfirm = () => {
     // open and close modal for delete
@@ -81,8 +163,49 @@ export default class Todo extends Component {
     // open modal for add new task
     this.setState({ showNewTaskModal: !this.state.showNewTaskModal });
   };
+  editTask = (editModal) => {
+    this.setState({ editModal: editModal });
+  };
+  handleSaveTask = (editedTask) => {
+    fetch(`http://localhost:3001/task/${editedTask._id}`, {
+      method: "PUT",
+      body: JSON.stringify(editedTask),
+      headers: { "Content-Type": "application/json" },
+    })
+      .then(async (response) => {
+        const res = await response.json();
+
+        if (response.status >= 400 && response.status < 600) {
+          if (res.error) {
+            throw res.error;
+          } else {
+            throw new Error("Something went wrong !");
+          }
+        }
+        const task = [...this.state.tasks];
+        const foundIndex = task.findIndex(
+          (tasks) => tasks._id === editedTask._id
+        );
+        task[foundIndex] = editedTask;
+        this.setState({
+          tasks: task,
+          editModal: null,
+        });
+      })
+
+      .catch((error) => {
+        console.log(error, "error");
+      });
+  };
+
   render() {
-    const { tasks, selectedTasks, showConfirm, showNewTaskModal } = this.state;
+    const {
+      tasks,
+      selectedTasks,
+      showConfirm,
+      showNewTaskModal,
+      editModal,
+    } = this.state;
     let list = tasks.map((task) => {
       return (
         <Col
@@ -100,6 +223,7 @@ export default class Todo extends Component {
             toggleTask={this.toggleTask}
             deleteTask={this.deleteTask}
             selected={selectedTasks.has(task._id)}
+            editTask={this.editTask}
           />
         </Col>
       );
@@ -110,7 +234,7 @@ export default class Todo extends Component {
         <Container>
           <Row>
             <Col>
-              <h1>Todo list App</h1>
+              {/* <h1>Todo list App</h1> */}
               <NewTask
                 showNewTaskModal={showNewTaskModal}
                 selectedTasks={selectedTasks}
@@ -131,7 +255,7 @@ export default class Todo extends Component {
             <Button
               onClick={this.selectAll}
               variant="warning"
-              disabled={!!selectedTasks.size}
+              disabled={tasks.length > 1 ? false : true}
               className="m-5"
             >
               Select all
@@ -139,7 +263,7 @@ export default class Todo extends Component {
             <Button
               className="m-5"
               onClick={this.deselectAll}
-              disabled={selectedTasks.size === 0}
+              disabled={!selectedTasks.size}
               variant="success"
             >
               Deselect All
@@ -162,6 +286,14 @@ export default class Todo extends Component {
             onClose={this.toggleConfirm}
             onConfirm={this.deleteSelect}
             selectedTasks={selectedTasks.size}
+          />
+        )}
+        {editModal && (
+          <EditTaskModal
+            openNewTaskModal={this.openNewTaskModal}
+            editModal={editModal}
+            editTask={() => this.editTask(null)}
+            saveEdit={this.handleSaveTask}
           />
         )}
       </div>
