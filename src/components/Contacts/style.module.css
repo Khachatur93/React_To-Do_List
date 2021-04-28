@@ -1,0 +1,4 @@
+.invalid,
+.invalid:focus {
+  border: 1px solid red;
+}

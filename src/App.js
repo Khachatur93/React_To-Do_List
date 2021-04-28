@@ -1,9 +1,10 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
+// import Counter from "./demo/Counter";
 import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 import Todo from "./components/Todo/Todo";
-import Contacts from "./Contacts/Contacts";
-import About from "../src/About/About";
+import Contacts from "./components/Contacts/Contacts";
+import About from "./components/About/About";
 import Error404 from "./components/404/404";
 import NavMenu from "./components/NavMenu/NavMenu";
 import SingleTask from "../src/components/SingleTask/SingleTask";
