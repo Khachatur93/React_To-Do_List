@@ -4,8 +4,9 @@ export default function request(url, method = "GET", body) {
     headers: { "Content-Type": "application/json" },
   };
   if (body) {
-    config.body = JSON.Stringify(body);
+    config.body = JSON.stringify(body);
   }
+
   return fetch(url, config)
     .then(async (response) => {
       const res = await response.json();

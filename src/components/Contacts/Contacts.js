@@ -49,7 +49,9 @@ export default function Contact() {
       fetch("http://localhost:3001/contact", {
         method: "POST",
         body: JSON.stringify(values),
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
       })
         .then(async (response) => {
           const res = await response.json();
@@ -58,15 +60,21 @@ export default function Contact() {
             if (res.error) {
               throw res.error;
             } else {
-              throw new Error("Something went wrong !");
+              throw new Error("Something went wrong!");
             }
           }
-          console.log(" ok  ");
-        })
 
+          console.log("Form sent successfully");
+          setValues({
+            name: "",
+            email: "",
+            message: "",
+          });
+        })
         .catch((error) => {
-          console.log(error, "error");
+          console.log("catch error", error);
         });
+
       return;
     }
     if (!valuesExist && !errorExist) {

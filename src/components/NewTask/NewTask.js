@@ -4,8 +4,9 @@ import PropTypes from "prop-types";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { formatDate } from "../../utility/utility";
-
-export default class NewTask extends PureComponent {
+import { connect } from "react-redux";
+import { newTask } from "../../store/actions";
+class NewTask extends PureComponent {
   state = {
     title: "",
     description: "",
@@ -41,7 +42,7 @@ export default class NewTask extends PureComponent {
       description: "",
     });
 
-    this.props.addTask(newTask);
+    this.props.newTask(newTask);
   };
   handleChangDate = (value) => {
     // save new Task Data
@@ -58,7 +59,7 @@ export default class NewTask extends PureComponent {
         aria-labelledby="contained-modal-title-center"
         centered
       >
-        <Modal.Header closeButton>
+        <Modal.Header>
           <Modal.Title id="contained-modal-title-center">
             Add new task
           </Modal.Title>
@@ -106,7 +107,17 @@ export default class NewTask extends PureComponent {
   }
 }
 NewTask.propTypes = {
-  addTask: PropTypes.func.isRequired,
   showNewTaskModal: PropTypes.bool.isRequired,
   openNewTaskModal: PropTypes.func.isRequired,
 };
+const mapStateToProps = (state) => {
+  return {
+    modalState: state.modalState,
+  };
+};
+
+const mapDespatchToProps = {
+  newTask,
+};
+
+export default connect(mapStateToProps, mapDespatchToProps)(NewTask);

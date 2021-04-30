@@ -6,10 +6,10 @@ import Confirm from "../Confirm";
 import EditTaskModal from "../EditTaskModal/EditTaskModal";
 import { connect } from "react-redux";
 import request from "../../helpers/request";
+import { getTasks, deleteSelect } from "../../store/actions";
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 class Todo extends PureComponent {
   state = {
-    // tasks: [],
     showConfirm: false,
     selectedTasks: new Set(),
     showNewTaskModal: false,
@@ -18,62 +18,27 @@ class Todo extends PureComponent {
   componentDidMount() {
     this.props.getTasks();
   }
-  ////////////////////////////////////////////////////
-  addTask = (newTask) => {
-    fetch("http://localhost:3001/task", {
-      method: "POST",
-      body: JSON.stringify(newTask),
-      headers: { "Content-Type": "application/json" },
-    })
-      .then(async (response) => {
-        const res = await response.json();
-
-        if (response.status >= 400 && response.status < 600) {
-          if (res.error) {
-            throw res.error;
-          } else {
-            throw new Error("Something went wrong !");
-          }
-        }
-        const tasks = [...this.state.tasks, res];
-        this.setState({
-          tasks,
-          showNewTaskModal: false,
-        });
-      })
-
-      .catch((error) => {
-        console.log(error, "error");
+  componentDidUpdate(prevProps) {
+    if (!prevProps.modalState && this.props.modalState) {
+      this.setState({ showNewTaskModal: false });
+      return;
+    }
+    if (!prevProps.deleteTaskSuccess && this.props.deleteTaskSuccess) {
+      this.setState({
+        selectedTasks: new Set(),
+        showConfirm: false,
       });
-  };
+      return;
+    }
+  }
   deleteTask = (taskId) => {
-    // delete task
-
-    fetch(`http://localhost:3001/task/${taskId}`, {
-      method: "DELETE",
-      headers: { "Content-Type": "application/json" },
-    })
-      .then(async (response) => {
-        const res = await response.json();
-
-        if (response.status >= 400 && response.status < 600) {
-          if (res.error) {
-            throw res.error;
-          } else {
-            throw new Error("Something went wrong !");
-          }
-        }
-
-        const todo = this.state.tasks.filter((task) => taskId !== task._id);
-        this.setState({
-          tasks: todo,
-        });
-      })
-
-      .catch((error) => {
-        console.log(error, "error");
-      });
+    this.props.deleteTasks(taskId);
   };
+  ////////////////////////////////////////////////////
+  // addTask = (newTask) => {
+  //   this.props.newTasks(newTask);
+  // };
+
   toggleTask = (taskId) => {
     // add to state all checked tasks
     const selectedTasks = new Set(this.state.selectedTasks);
@@ -89,39 +54,8 @@ class Todo extends PureComponent {
   };
   deleteSelect = () => {
     // delete all checked tasks
-    const { selectedTasks, tasks } = this.state;
-    const body = { tasks: [...selectedTasks] };
-    fetch("http://localhost:3001/task", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    })
-      .then(async (response) => {
-        const res = await response.json();
-
-        if (response.status >= 400 && response.status < 600) {
-          if (res.error) {
-            throw res.error;
-          } else {
-            throw new Error("Something went wrong !");
-          }
-        }
-        const newTasks = tasks.filter((task) => {
-          if (selectedTasks.has(task._id)) {
-            return false;
-          }
-          return true;
-        });
-        this.setState({
-          tasks: newTasks,
-          selectedTasks: new Set(),
-          showConfirm: false,
-        });
-      })
-
-      .catch((error) => {
-        console.log(error, "error");
-      });
+    const { selectedTasks } = this.state;
+    this.props.deleteSelect(selectedTasks);
   };
   toggleConfirm = () => {
     // open and close modal for delete
@@ -189,7 +123,6 @@ class Todo extends PureComponent {
     } = this.state;
 
     const { tasks } = this.props;
-    console.log("tasks", tasks);
 
     let list = tasks.map((task) => {
       return (
@@ -206,7 +139,7 @@ class Todo extends PureComponent {
             task={task}
             selectedTasks={selectedTasks}
             toggleTask={this.toggleTask}
-            deleteTask={this.deleteTask}
+            deleteTask={this.props.deleteTasks}
             selected={selectedTasks.has(task._id)}
             editTask={this.editTask}
           />
@@ -223,7 +156,7 @@ class Todo extends PureComponent {
               <NewTask
                 showNewTaskModal={showNewTaskModal}
                 selectedTasks={selectedTasks}
-                addTask={this.addTask}
+                // addTask={this.props.newTask}
                 openNewTaskModal={this.openNewTaskModal}
               />
             </Col>
@@ -288,6 +221,8 @@ class Todo extends PureComponent {
 const mapStateToProps = (state) => {
   return {
     tasks: state.tasks,
+    modalState: state.modalState,
+    deleteTaskSuccess: state.deleteTaskSuccess,
   };
 };
 // const mapDespatchToProps = (despatch) => {
@@ -300,10 +235,12 @@ const mapStateToProps = (state) => {
 //   };
 // };
 const mapDespatchToProps = {
-  getTasks: () => {
+  getTasks,
+  deleteSelect,
+  deleteTasks: (taskId) => {
     return (despatch) => {
-      request("http://localhost:3001/task").then((tasks) => {
-        despatch({ type: "GET_TASKS", tasks: tasks });
+      request(`http://localhost:3001/task/${taskId}`, "DELETE").then(() => {
+        despatch({ type: "DELETE_TASKS", taskId: taskId });
       });
     };
   },

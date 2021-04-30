@@ -10,13 +10,28 @@ export default function NavMenu() {
         ToDo List
       </NavLink>
       <Nav className="mr-auto">
-        <NavLink activeClassName={style.navStyle} to="/">
+        <NavLink
+          activeClassName={style.active}
+          className={style.navStyle}
+          to="/"
+          exact
+        >
           Home
         </NavLink>
-        <NavLink className={style.navStyle} to="/About">
+        <NavLink
+          className={style.navStyle}
+          activeClassName={style.active}
+          to="/About"
+          exact
+        >
           About
         </NavLink>
-        <NavLink className={style.navStyle} to="/Contacts">
+        <NavLink
+          className={style.navStyle}
+          activeClassName={style.active}
+          to="/Contacts"
+          exact
+        >
           Contacts
         </NavLink>
       </Nav>
