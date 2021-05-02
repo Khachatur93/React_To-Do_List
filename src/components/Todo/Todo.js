@@ -5,8 +5,8 @@ import NewTask from "../NewTask/NewTask";
 import Confirm from "../Confirm";
 import EditTaskModal from "../EditTaskModal/EditTaskModal";
 import { connect } from "react-redux";
-import request from "../../helpers/request";
-import { getTasks, deleteSelect } from "../../store/actions";
+
+import { getTasks, deleteSelect, deleteTasks } from "../../store/actions";
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 class Todo extends PureComponent {
   state = {
@@ -20,6 +20,7 @@ class Todo extends PureComponent {
   }
   componentDidUpdate(prevProps) {
     console.log("prevProps", prevProps);
+
     if (!prevProps.modalState && this.props.modalState) {
       this.setState({ showNewTaskModal: false });
       return;
@@ -32,10 +33,8 @@ class Todo extends PureComponent {
       return;
     }
 
-    if (!prevProps.handleSave && this.props.handleSave) {
-      this.setState({
-        editModal: null,
-      });
+    if (!prevProps.editTaskSuccess && this.props.editTaskSuccess) {
+      this.editTask();
       return;
     }
   }
@@ -186,7 +185,6 @@ class Todo extends PureComponent {
             openNewTaskModal={this.openNewTaskModal}
             editModal={editModal}
             editTask={() => this.editTask(null)}
-            saveEdit={this.props.handleSaveTask}
           />
         )}
       </div>
@@ -198,7 +196,7 @@ const mapStateToProps = (state) => {
     tasks: state.tasks,
     modalState: state.modalState,
     deleteTaskSuccess: state.deleteTaskSuccess,
-    handleSave: state.handleSave,
+    editTaskSuccess: state.editTaskSuccess,
   };
 };
 // const mapDespatchToProps = (despatch) => {
@@ -213,25 +211,7 @@ const mapStateToProps = (state) => {
 const mapDespatchToProps = {
   getTasks,
   deleteSelect,
-  deleteTasks: (taskId) => {
-    return (despatch) => {
-      request(`http://localhost:3001/task/${taskId}`, "DELETE").then(() => {
-        despatch({ type: "DELETE_TASKS", taskId: taskId });
-      });
-    };
-  },
-  handleSaveTask: (editedTask) => {
-    return (despatch) => {
-      despatch({ type: "HANDLE_SAVE_TASK_CLOSE" });
-      request(
-        `http://localhost:3001/task/${editedTask._id}`,
-        "PUT",
-        editedTask
-      ).then((value) => {
-        despatch({ type: "HANDLE_SAVE_TASK", value: value });
-      });
-    };
-  },
+  deleteTasks,
 };
 
 export default connect(mapStateToProps, mapDespatchToProps)(Todo);

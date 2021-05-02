@@ -4,7 +4,9 @@ import PropTypes from "prop-types";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { formatDate } from "../../utility/utility";
-export default class EditTaskModal extends PureComponent {
+import { connect } from "react-redux";
+import { handleSaveTask } from "../../store/actions";
+class EditTaskModal extends PureComponent {
   constructor(props) {
     super(props);
     const { date } = props.editModal;
@@ -14,8 +16,10 @@ export default class EditTaskModal extends PureComponent {
     };
   }
 
-  handleChang = (value, name) => {
+  handleChang = (event) => {
     // save to state  input values
+
+    const { name, value } = event.target;
 
     this.setState({
       [name]: value,
@@ -34,10 +38,10 @@ export default class EditTaskModal extends PureComponent {
       return;
     }
 
-    this.props.saveEdit({
+    this.props.handleSaveTask({
       _id: this.state._id,
-      description,
       title,
+      description,
       date: formatDate(this.state.date.toISOString()),
     });
   };
@@ -66,9 +70,8 @@ export default class EditTaskModal extends PureComponent {
             <FormControl
               placeholder="Title"
               value={title}
-              onChange={(event) =>
-                this.handleChang(event.target.value, "title")
-              }
+              name="title"
+              onChange={this.handleChang}
               onKeyDown={this.handleKeyDown}
             />
           </InputGroup>
@@ -76,9 +79,8 @@ export default class EditTaskModal extends PureComponent {
             as="textarea"
             placeholder="Description"
             value={description}
-            onChange={(event) =>
-              this.handleChang(event.target.value, "description")
-            }
+            name="description"
+            onChange={this.handleChang}
             rows={5}
           />
           <DatePicker
@@ -109,5 +111,8 @@ EditTaskModal.propTypes = {
   openNewTaskModal: PropTypes.func.isRequired,
   editModal: PropTypes.object.isRequired,
   editTask: PropTypes.func.isRequired,
-  saveEdit: PropTypes.func.isRequired,
 };
+const mapDespatchToProps = {
+  handleSaveTask,
+};
+export default connect(null, mapDespatchToProps)(EditTaskModal);

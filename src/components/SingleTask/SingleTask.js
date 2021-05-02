@@ -26,7 +26,6 @@ export default class SingleTask extends Component {
             throw new Error("Something went wrong !");
           }
         }
-        console.log("res", res);
         this.setState({
           tasks: res,
         });

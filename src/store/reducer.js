@@ -2,13 +2,24 @@ const defaultState = {
   tasks: [],
   modalState: false,
   deleteTaskSuccess: false,
-  handleSave: true,
+  editTaskSuccess: false,
+  loading: false,
 };
 
 export default function reducer(state = defaultState, action) {
   switch (action.type) {
+    case "PENDING": {
+      return {
+        ...state,
+
+        loading: true,
+        modalState: false,
+        deleteTaskSuccess: false,
+        editTaskSuccess: false,
+      };
+    }
     case "GET_TASKS": {
-      return { ...state, tasks: action.tasks };
+      return { ...state, tasks: action.tasks, loading: false };
     }
 
     case "DELETE_TASKS": {
@@ -16,23 +27,19 @@ export default function reducer(state = defaultState, action) {
         ...state,
 
         tasks: state.tasks.filter((task) => action.taskId !== task._id),
+        loading: false,
       };
     }
-    case "NEW_TASKS": {
+    case "ADD_TASKS": {
       return {
         ...state,
 
         tasks: [...state.tasks, action.res],
         modalState: true,
+        loading: false,
       };
     }
-    case "ADDING_TASKS": {
-      return {
-        ...state,
 
-        modalState: false,
-      };
-    }
     case "DELETE_SELECTED_TASKS": {
       const newTasks = state.tasks.filter((task) => {
         if (action.taskIds.has(task._id)) {
@@ -46,36 +53,26 @@ export default function reducer(state = defaultState, action) {
 
         tasks: newTasks,
         deleteTaskSuccess: true,
+        loading: false,
       };
     }
-    case "DELETE_SELECTED_TASKS_CHECK": {
-      return {
-        ...state,
 
-        deleteTaskSuccess: false,
-      };
-    }
-    case "HANDLE_SAVE_TASKS": {
-      const task = [...state.tasks];
-      const foundIndex = task.findIndex(
+    case "EDIT_TASKS": {
+      const tasks = [...state.tasks];
+      const foundIndex = tasks.findIndex(
         (tasks) => tasks._id === action.value._id
       );
-      task[foundIndex] = action.editedTask;
+      tasks[foundIndex] = action.value;
 
       return {
         ...state,
 
-        tasks: task,
-        handleSave: true,
+        tasks,
+        editTaskSuccess: true,
+        loading: false,
       };
     }
-    case "HANDLE_SAVE_TASK_CLOSE": {
-      return {
-        ...state,
 
-        handleSave: false,
-      };
-    }
     default:
       return state;
   }
