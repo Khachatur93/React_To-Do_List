@@ -1,4 +1,9 @@
-const defaultState = { tasks: [], modalState: false, deleteTaskSuccess: false };
+const defaultState = {
+  tasks: [],
+  modalState: false,
+  deleteTaskSuccess: false,
+  handleSave: true,
+};
 
 export default function reducer(state = defaultState, action) {
   switch (action.type) {
@@ -48,6 +53,27 @@ export default function reducer(state = defaultState, action) {
         ...state,
 
         deleteTaskSuccess: false,
+      };
+    }
+    case "HANDLE_SAVE_TASKS": {
+      const task = [...state.tasks];
+      const foundIndex = task.findIndex(
+        (tasks) => tasks._id === action.value._id
+      );
+      task[foundIndex] = action.editedTask;
+
+      return {
+        ...state,
+
+        tasks: task,
+        handleSave: true,
+      };
+    }
+    case "HANDLE_SAVE_TASK_CLOSE": {
+      return {
+        ...state,
+
+        handleSave: false,
       };
     }
     default:
