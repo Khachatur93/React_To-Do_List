@@ -5,8 +5,9 @@ import NewTask from "../NewTask/NewTask";
 import Confirm from "../Confirm";
 import EditTaskModal from "../EditTaskModal/EditTaskModal";
 import { connect } from "react-redux";
-
 import { getTasks, deleteSelect, deleteTasks } from "../../store/actions";
+import Search from "../Search/Search";
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 class Todo extends PureComponent {
   state = {
@@ -14,13 +15,12 @@ class Todo extends PureComponent {
     selectedTasks: new Set(),
     showNewTaskModal: false,
     editModal: null,
+    search: true,
   };
   componentDidMount() {
     this.props.getTasks();
   }
   componentDidUpdate(prevProps) {
-    console.log("prevProps", prevProps);
-
     if (!prevProps.modalState && this.props.modalState) {
       this.setState({ showNewTaskModal: false });
       return;
@@ -67,7 +67,7 @@ class Todo extends PureComponent {
   };
   selectAll = () => {
     // select all tasks
-    const { tasks } = this.state;
+    const { tasks } = this.props;
     const id = tasks.map((task) => task._id);
     this.setState({
       selectedTasks: new Set(id),
@@ -93,6 +93,7 @@ class Todo extends PureComponent {
       showConfirm,
       showNewTaskModal,
       editModal,
+      search,
     } = this.state;
 
     const { tasks } = this.props;
@@ -187,6 +188,7 @@ class Todo extends PureComponent {
             editTask={() => this.editTask(null)}
           />
         )}
+        {search ? <Search /> : null}
       </div>
     );
   }

@@ -1,70 +1,154 @@
-# Getting Started with Create React App
+TodoList REST API
+How to use it
+Requirements
+You will need install Node.js, npm and MongoDB in your environement.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Node
+Node installation on Windows
+Just go on official Node.js website and download the installer. Also, be sure to have git available in your PATH, npm might need it (You can find git here).
 
-## Available Scripts
+Node installation on Ubuntu
+You can install nodejs and npm easily with apt install, just run the following commands.
 
-In the project directory, you can run:
+$ sudo apt install nodejs
+$ sudo apt install npm
+Other Operating Systems
+You can find more information about the installation on the official Node.js website and the official NPM website.
 
-### `yarn start`
+If the installation was successful, you should be able to run the following command.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+$ node --version
+v13.12.0
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+$ npm --version
+6.14.2
+If you need to update npm, you can make it using npm! Cool right? After running the following command, just open again the command line and be happy.
 
-### `yarn test`
+$ npm install npm -g
+MongoDB
+Install MongoDb Guide
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Project installation and usage
+$ git clone https://github.com/MASISKAR/todo-list-api
+$ cd todo-list-api
+$ npm install
+Remove .sample extension from configuration files located in /config/env/ sh dev.env.sample -> dev.env prod.env.sample -> prod.env
 
-### `yarn build`
+Running the project
+$ npm start
+Making requests
+By default, the API_HOST is http://localhost:3001
+Create a new task
+request url API_HOST/task
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+request method POST
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+request body { title: {String}, (required) description: {String}, date: {String} }
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Get all tasks or search
+request url API_HOST/task
 
-### `yarn eject`
+request method GET
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+The following filters and sorting are allowed
+{
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+status: OneOf['active', 'done'],
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+search: {searchString},
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+create_lte: {dateString},
 
-## Learn More
+create_gte: {dateString},
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+complete_lte: {dateString},
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+complete_gte: {dateString},
 
-### Code Splitting
+sort: OneOf['a-z', 'z-a', 'creation_date_oldest', 'creation_date_newest', 'completion_date_oldest', 'completion_date_newest'],
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+}
 
-### Analyzing the Bundle Size
+Get a single task
+request url API_HOST/task/:taskId request method GET
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+Update a task
+request url API_HOST/task/:taskId request method PUT request body { title: {String}, description: {String}, date: {String} }
 
-### Making a Progressive Web App
+Mark a task as done/active
+request url API_HOST/task/:taskId request method PUT request body { status: OneOf['active', 'done'], }
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+Delete the task
+request url API_HOST/task/:taskId request method DELETE
 
-### Advanced Configuration
+Delete batch tasks
+request url API_HOST/task request method PATCH request body { tasks: {Array[String{task id}]}, }
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+Create a new user (register)
+request url API_HOST/user
 
-### Deployment
+request method POST
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+request body { email: {String} (required) password: {String} (required) name: {String} (required) surname: {String} (required) }
 
-### `yarn build` fails to minify
+Sign in
+request url API_HOST/user/sign-in
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+request method POST
+
+request body { email: {String} (required) password: {String} (required) }
+
+Sign out
+request url API_HOST/user/sign-out
+
+request method POST
+
+request body { jwt: {JWT string} (required) }
+
+Refresh token
+request url API_HOST/user/:id/token
+
+request method PUT
+
+request body { refreshToken: {string} (required) }
+
+Get user info
+request url API_HOST/user
+
+request method GET
+
+Update user info
+request url API_HOST/user
+
+request method PUT
+
+request body { name: {String} surname: {String} }
+
+Update user password
+request url API_HOST/user/password
+
+request method PUT
+
+request body { oldPassword: {String} newPassword: {String} confirmNewPassword: {String} }
+
+Sending contact form
+request url API_HOST/form
+
+request method POST
+
+request body { name: {String}, (required) email: {String}, (required) message: {String} }
+
+About
+No description, website, or topics provided.
+Resources
+ Readme
+Releases
+No releases published
+Packages
+No packages published
+Environments 1
+ todo-02-api Active
+Languages
+JavaScript
+100.0%
+

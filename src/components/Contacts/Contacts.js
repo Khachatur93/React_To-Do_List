@@ -7,11 +7,11 @@ export default function Contact() {
   const [values, setValues] = useState({
     name: "",
     email: "",
-    massage: "",
+    message: "",
   });
   const [error, setError] = useState({
     name: null,
-    massage: null,
+    message: null,
     email: null,
   });
   const saveBut = ({ target: { value, name } }) => {
@@ -46,7 +46,7 @@ export default function Contact() {
     const valuesExist = !valuesArr.some((el) => el === "");
 
     if (valuesExist && !errorExist) {
-      fetch("http://localhost:3001/contact", {
+      fetch("http://localhost:3001/form", {
         method: "POST",
         body: JSON.stringify(values),
         headers: { "Content-Type": "application/json" },
@@ -74,7 +74,7 @@ export default function Contact() {
         ...error,
         name: "Filed is required",
         email: "Filed is required",
-        massage: "Filed is required",
+        message: "Filed is required",
       });
     }
   };
@@ -107,20 +107,20 @@ export default function Contact() {
           <Form.Text className="text-muted"></Form.Text>
         </Form.Group>
         <Form.Group controlId="formBasicPassword">
-          <Form.Label className="text-danger">{error.massage}</Form.Label>
+          <Form.Label className="text-danger">{error.message}</Form.Label>
           <Form.Control
-            className={error.massage ? styles.invalid : ""}
+            className={error.message ? styles.invalid : ""}
             as="textarea"
-            placeholder="Your massage"
+            placeholder="Your message"
             rows={5}
-            value={values.massage}
-            name="massage"
+            value={values.message}
+            name="message"
             onChange={saveBut}
           />
         </Form.Group>
         <br />
         <Button variant="primary" onClick={handleSubmit}>
-          Send Massage
+          Send message
         </Button>
       </Form>
     </div>

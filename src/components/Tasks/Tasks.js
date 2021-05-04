@@ -20,7 +20,7 @@ export default class Tasks extends PureComponent {
       <Card
         key={task._id}
         className={`${selected ? style.selected : ""}`}
-        style={{ height: "100%" }}
+        style={{ height: "100%", boxShadow: "10px 10px 5px grey" }}
       >
         <div className={style.tas}>
           <Card.Header>
@@ -34,7 +34,7 @@ export default class Tasks extends PureComponent {
           </Card.Header>
           <Card.Body>
             <Card.Title>{formatDate(task.date)}</Card.Title>
-            <Card.Text>{textTruncate(task.description)}</Card.Text>
+            <Card.Text rows={1}>{textTruncate(task.description)}</Card.Text>
             <Col>
               <Button
                 variant="warning"

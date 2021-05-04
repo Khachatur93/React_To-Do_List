@@ -37,13 +37,13 @@ class EditTaskModal extends PureComponent {
     if (!title) {
       return;
     }
-
-    this.props.handleSaveTask({
+    const editedTask = {
       _id: this.state._id,
       title,
       description,
       date: formatDate(this.state.date.toISOString()),
-    });
+    };
+    this.props.handleSaveTask(editedTask, this.props.from);
   };
   handleChangDate = (value) => {
     // save new Task Data

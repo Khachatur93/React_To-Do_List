@@ -1,3 +1,8 @@
+import style from "./style.module.css";
 export default function Error404() {
-  return <h1>note found error-404</h1>;
+  return (
+    <div className={style.er}>
+      <h1 className={style.h1}> Please go back the mane paj  </h1>
+    </div>
+  );
 }

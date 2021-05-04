@@ -1,8 +1,14 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Spinner as BSpinner } from "react-bootstrap";
 import styles from "./spinnerStyle.module.css";
 
 export default function Spinner() {
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, []);
   return (
     <div className={styles.spinnerContainer}>
       <BSpinner
@@ -11,9 +17,8 @@ export default function Spinner() {
         animation="border"
         role="status"
         size="lg"
-      >
-        <span className="sr-only">Loading...</span>
-      </BSpinner>
+        variant="success"
+      ></BSpinner>
     </div>
   );
 }

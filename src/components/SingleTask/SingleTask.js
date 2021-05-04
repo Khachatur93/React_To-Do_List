@@ -3,104 +3,49 @@ import { Card, Button, Col } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashAlt, faEdit } from "@fortawesome/free-solid-svg-icons";
 import { formatDate, textTruncate, titleTruncate } from "../../utility/utility";
-
+import { connect } from "react-redux";
+import { getTask, deleteTasks } from "../../store/actions";
 import EditTaskModal from "../../components/EditTaskModal/EditTaskModal";
-export default class SingleTask extends Component {
+
+class SingleTask extends Component {
   state = {
-    tasks: null,
     openEditModal: false,
   };
+
   componentDidMount() {
     const taskId = this.props.match.params.taskId;
-
-    fetch(`http://localhost:3001/task/${taskId}`, {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-    })
-      .then(async (response) => {
-        const res = await response.json();
-        if (response.status >= 400 && response.status < 600) {
-          if (res.error) {
-            throw res.error;
-          } else {
-            throw new Error("Something went wrong !");
-          }
-        }
-        this.setState({
-          tasks: res,
-        });
-      })
-
-      .catch((error) => {
-        console.log(error, "error");
+    this.props.getTask(taskId);
+  }
+  componentDidUpdate(prevProps) {
+    if (!prevProps.editSuccess && this.props.editSuccess) {
+      this.setState({
+        openEditModal: false,
       });
+      return;
+    }
   }
   deleteTask = () => {
-    //delete task  in back and clos task
-    const taskId = this.state.tasks._id;
+    //delete task  in back and close task
+    const taskId = this.props.task._id;
 
-    fetch(`http://localhost:3001/task/${taskId}`, {
-      method: "DELETE",
-      headers: { "Content-Type": "application/json" },
-    })
-      .then(async (response) => {
-        const res = await response.json();
-
-        if (response.status >= 400 && response.status < 600) {
-          if (res.error) {
-            throw res.error;
-          } else {
-            throw new Error("Something went wrong !");
-          }
-        }
-
-        this.props.history.push("/");
-      })
-
-      .catch((error) => {
-        console.log(error, "error");
-      });
+    this.props.deleteTasks(taskId, "single");
   };
-  handleSaveTask = (editedTask) => {
-    fetch(`http://localhost:3001/task/${editedTask._id}`, {
-      method: "PUT",
-      body: JSON.stringify(editedTask),
-      headers: { "Content-Type": "application/json" },
-    })
-      .then(async (response) => {
-        const res = await response.json();
 
-        if (response.status >= 400 && response.status < 600) {
-          if (res.error) {
-            throw res.error;
-          } else {
-            throw new Error("Something went wrong !");
-          }
-        }
-        this.setState({
-          tasks: res,
-          openEditModal: false,
-        });
-      })
-
-      .catch((error) => {
-        console.log(error, "error");
-      });
-  };
   toggleEditModal = () => {
     this.setState({ openEditModal: !this.state.openEditModal });
   };
   render() {
-    const { tasks, openEditModal } = this.state;
+    const { openEditModal } = this.state;
+    const { task } = this.props;
     return (
       <div style={{ padding: "14% 35%" }}>
         <>
-          {tasks ? (
+          {task ? (
             <Card>
-              <Card.Header>{titleTruncate(tasks.title)}</Card.Header>
+              <Card.Header>{titleTruncate(task.title)}</Card.Header>
               <Card.Body>
-                <Card.Title>{formatDate(tasks.date)}</Card.Title>
-                <Card.Text> {textTruncate(tasks.description)}</Card.Text>
+                <Card.Title>{formatDate(task.date)}</Card.Title>
+                <Card.Text> {textTruncate(task.description)}</Card.Text>
                 <Col>
                   <Button
                     variant="warning"
@@ -126,12 +71,26 @@ export default class SingleTask extends Component {
         {openEditModal && (
           <EditTaskModal
             openNewTaskModal={this.toggleEditModal}
-            editModal={tasks}
+            editModal={task}
             editTask={this.toggleEditModal}
-            saveEdit={this.handleSaveTask}
+            from="single"
           />
         )}
       </div>
     );
   }
 }
+const mapStateToProps = (state) => {
+  return {
+    task: state.task,
+    modalState: state.modalState,
+    deleteTaskSuccess: state.deleteTaskSuccess,
+    editSuccess: state.editSuccess,
+  };
+};
+
+const mapDespatchToProps = {
+  getTask,
+  deleteTasks,
+};
+export default connect(mapStateToProps, mapDespatchToProps)(SingleTask);
