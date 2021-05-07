@@ -4,94 +4,45 @@ import Tasks from "../Tasks/Tasks";
 import NewTask from "../NewTask/NewTask";
 import Confirm from "../Confirm";
 import EditTaskModal from "../EditTaskModal/EditTaskModal";
+import { connect } from "react-redux";
+import { getTasks, deleteSelect, deleteTasks } from "../../store/actions";
+import Search from "../Search/Search";
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-export default class Todo extends PureComponent {
+class Todo extends PureComponent {
   state = {
-    tasks: [],
     showConfirm: false,
     selectedTasks: new Set(),
     showNewTaskModal: false,
     editModal: null,
+    search: true,
   };
   componentDidMount() {
-    fetch("http://localhost:3001/task", {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-    })
-      .then(async (response) => {
-        const res = await response.json();
-        if (response.status >= 400 && response.status < 600) {
-          if (res.error) {
-            throw res.error;
-          } else {
-            throw new Error("Something went wrong !");
-          }
-        }
-        this.setState({
-          tasks: res,
-        });
-      })
-
-      .catch((error) => {
-        console.log(error, "error");
-      });
+    this.props.getTasks();
   }
-  ////////////////////////////////////////////////////
-  addTask = (newTask) => {
-    fetch("http://localhost:3001/task", {
-      method: "POST",
-      body: JSON.stringify(newTask),
-      headers: { "Content-Type": "application/json" },
-    })
-      .then(async (response) => {
-        const res = await response.json();
-
-        if (response.status >= 400 && response.status < 600) {
-          if (res.error) {
-            throw res.error;
-          } else {
-            throw new Error("Something went wrong !");
-          }
-        }
-        const tasks = [...this.state.tasks, res];
-        this.setState({
-          tasks,
-          showNewTaskModal: false,
-        });
-      })
-
-      .catch((error) => {
-        console.log(error, "error");
+  componentDidUpdate(prevProps) {
+    if (!prevProps.modalState && this.props.modalState) {
+      this.setState({ showNewTaskModal: false });
+      return;
+    }
+    if (!prevProps.deleteTaskSuccess && this.props.deleteTaskSuccess) {
+      this.setState({
+        selectedTasks: new Set(),
+        showConfirm: false,
       });
-  };
+      return;
+    }
+
+    if (!prevProps.editTaskSuccess && this.props.editTaskSuccess) {
+      this.editTask();
+      return;
+    }
+  }
   deleteTask = (taskId) => {
-    // delete task
-
-    fetch(`http://localhost:3001/task/${taskId}`, {
-      method: "DELETE",
-      headers: { "Content-Type": "application/json" },
-    })
-      .then(async (response) => {
-        const res = await response.json();
-
-        if (response.status >= 400 && response.status < 600) {
-          if (res.error) {
-            throw res.error;
-          } else {
-            throw new Error("Something went wrong !");
-          }
-        }
-
-        const todo = this.state.tasks.filter((task) => taskId !== task._id);
-        this.setState({
-          tasks: todo,
-        });
-      })
-
-      .catch((error) => {
-        console.log(error, "error");
-      });
+    this.props.deleteTasks(taskId);
   };
+  ////////////////////////////////////////////////////
+
   toggleTask = (taskId) => {
     // add to state all checked tasks
     const selectedTasks = new Set(this.state.selectedTasks);
@@ -107,39 +58,8 @@ export default class Todo extends PureComponent {
   };
   deleteSelect = () => {
     // delete all checked tasks
-    const { selectedTasks, tasks } = this.state;
-    const body = { tasks: [...selectedTasks] };
-    fetch("http://localhost:3001/task", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    })
-      .then(async (response) => {
-        const res = await response.json();
-
-        if (response.status >= 400 && response.status < 600) {
-          if (res.error) {
-            throw res.error;
-          } else {
-            throw new Error("Something went wrong !");
-          }
-        }
-        const newTasks = tasks.filter((task) => {
-          if (selectedTasks.has(task._id)) {
-            return false;
-          }
-          return true;
-        });
-        this.setState({
-          tasks: newTasks,
-          selectedTasks: new Set(),
-          showConfirm: false,
-        });
-      })
-
-      .catch((error) => {
-        console.log(error, "error");
-      });
+    const { selectedTasks } = this.state;
+    this.props.deleteSelect(selectedTasks);
   };
   toggleConfirm = () => {
     // open and close modal for delete
@@ -147,7 +67,7 @@ export default class Todo extends PureComponent {
   };
   selectAll = () => {
     // select all tasks
-    const { tasks } = this.state;
+    const { tasks } = this.props;
     const id = tasks.map((task) => task._id);
     this.setState({
       selectedTasks: new Set(id),
@@ -166,46 +86,18 @@ export default class Todo extends PureComponent {
   editTask = (editModal) => {
     this.setState({ editModal: editModal });
   };
-  handleSaveTask = (editedTask) => {
-    fetch(`http://localhost:3001/task/${editedTask._id}`, {
-      method: "PUT",
-      body: JSON.stringify(editedTask),
-      headers: { "Content-Type": "application/json" },
-    })
-      .then(async (response) => {
-        const res = await response.json();
-
-        if (response.status >= 400 && response.status < 600) {
-          if (res.error) {
-            throw res.error;
-          } else {
-            throw new Error("Something went wrong !");
-          }
-        }
-        const task = [...this.state.tasks];
-        const foundIndex = task.findIndex(
-          (tasks) => tasks._id === editedTask._id
-        );
-        task[foundIndex] = editedTask;
-        this.setState({
-          tasks: task,
-          editModal: null,
-        });
-      })
-
-      .catch((error) => {
-        console.log(error, "error");
-      });
-  };
 
   render() {
     const {
-      tasks,
       selectedTasks,
       showConfirm,
       showNewTaskModal,
       editModal,
+      search,
     } = this.state;
+
+    const { tasks } = this.props;
+
     let list = tasks.map((task) => {
       return (
         <Col
@@ -221,7 +113,7 @@ export default class Todo extends PureComponent {
             task={task}
             selectedTasks={selectedTasks}
             toggleTask={this.toggleTask}
-            deleteTask={this.deleteTask}
+            deleteTask={this.props.deleteTasks}
             selected={selectedTasks.has(task._id)}
             editTask={this.editTask}
           />
@@ -234,51 +126,52 @@ export default class Todo extends PureComponent {
         <Container>
           <Row>
             <Col>
-              {/* <h1>Todo list App</h1> */}
               <NewTask
                 showNewTaskModal={showNewTaskModal}
                 selectedTasks={selectedTasks}
-                addTask={this.addTask}
+                // addTask={this.props.newTask}
                 openNewTaskModal={this.openNewTaskModal}
               />
             </Col>
           </Row>
-          <Col className="mb-5">
-            <Button
-              disabled={!!selectedTasks.size}
-              onClick={this.openNewTaskModal}
-              variant="primary "
-              // className="m-4"
-            >
-              Add Task
-            </Button>
-            <Button
-              onClick={this.selectAll}
-              variant="warning"
-              disabled={tasks.length > 1 ? false : true}
-              className="m-5"
-            >
-              Select all
-            </Button>
-            <Button
-              className="m-5"
-              onClick={this.deselectAll}
-              disabled={!selectedTasks.size}
-              variant="success"
-            >
-              Deselect All
-            </Button>
+          <Container style={{ margin: "5%  0%" }}>
+            <Row>
+              <Col>
+                <Button
+                  disabled={!!selectedTasks.size}
+                  onClick={this.openNewTaskModal}
+                  variant="primary "
+                  // className="m-4"
+                >
+                  Add Task
+                </Button>
+              </Col>
 
-            <Button
-              onClick={this.toggleConfirm}
-              variant="danger"
-              disabled={!selectedTasks.size}
-              className="m-5"
-            >
-              Delete Select
-            </Button>
-          </Col>
-
+              <Col>
+                <Button onClick={this.selectAll} variant="warning">
+                  Select all
+                </Button>
+              </Col>
+              <Col>
+                <Button
+                  onClick={this.deselectAll}
+                  disabled={!selectedTasks.size}
+                  variant="success"
+                >
+                  Deselect All
+                </Button>
+              </Col>
+              <Col>
+                <Button
+                  onClick={this.toggleConfirm}
+                  variant="danger"
+                  disabled={!selectedTasks.size}
+                >
+                  Delete Select
+                </Button>
+              </Col>
+            </Row>
+          </Container>
           <Row>{list}</Row>
         </Container>
         {showConfirm && (
@@ -293,10 +186,34 @@ export default class Todo extends PureComponent {
             openNewTaskModal={this.openNewTaskModal}
             editModal={editModal}
             editTask={() => this.editTask(null)}
-            saveEdit={this.handleSaveTask}
           />
         )}
+        {search ? <Search /> : null}
       </div>
     );
   }
 }
+const mapStateToProps = (state) => {
+  return {
+    tasks: state.tasks,
+    modalState: state.modalState,
+    deleteTaskSuccess: state.deleteTaskSuccess,
+    editTaskSuccess: state.editTaskSuccess,
+  };
+};
+// const mapDespatchToProps = (despatch) => {
+//   return {
+//     getTasks: () => {
+//       request("http://localhost:3001/task").then((tasks) => {
+//         despatch({ type: "GET_TASKS", tasks: tasks });
+//       });
+//     },
+//   };
+// };
+const mapDespatchToProps = {
+  getTasks,
+  deleteSelect,
+  deleteTasks,
+};
+
+export default connect(mapStateToProps, mapDespatchToProps)(Todo);

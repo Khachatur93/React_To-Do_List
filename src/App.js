@@ -1,16 +1,45 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
+// import Counter from "./demo/Counter";
+import { Router, Switch, Route, Redirect } from "react-router-dom";
 import Todo from "./components/Todo/Todo";
-import Contacts from "./Contacts/Contacts";
-import About from "../src/About/About";
+import Contacts from "./components/Contacts/Contacts";
+import About from "./components/About/About";
 import Error404 from "./components/404/404";
 import NavMenu from "./components/NavMenu/NavMenu";
 import SingleTask from "../src/components/SingleTask/SingleTask";
-function App() {
+import Spinner from "../src/components/Spinner/Spinner";
+import { connect } from "react-redux";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { history } from "./helpers/history";
+function App({ loading, successMessage, errorMessage }) {
+  useEffect(() => {
+    if (successMessage) {
+      toast.success(`${successMessage} `, {
+        position: "bottom-left",
+        autoClose: 1400,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+    }
+    if (errorMessage) {
+      toast.error(`${errorMessage} `, {
+        position: "bottom-left",
+        autoClose: 1400,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+    }
+  }, [successMessage, errorMessage]);
+
   return (
     <div className="App">
-      <BrowserRouter>
+      <Router history={history}>
         <NavMenu />
         <Switch>
           <Route path="/" component={Todo} exact={true} />
@@ -20,9 +49,19 @@ function App() {
           <Route path="/error-404" component={Error404} exact={true} />
           <Redirect to="/error-404" />
         </Switch>
-      </BrowserRouter>
+      </Router>
+      {loading && <Spinner />}
+
+      <ToastContainer />
     </div>
   );
 }
+const mapStateToProps = (state) => {
+  return {
+    loading: state.loading,
+    successMessage: state.successMessage,
+    errorMessage: state.errorMessage,
+  };
+};
 
-export default App;
+export default connect(mapStateToProps, null)(App);
