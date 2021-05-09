@@ -8,7 +8,7 @@ const defaultState = {
   successMessage: null,
   errorMessage: null,
   editSuccess: false,
-  singleDeleted: false,
+  messageState: false,
 };
 
 export default function reducer(state = defaultState, action) {
@@ -24,6 +24,7 @@ export default function reducer(state = defaultState, action) {
         successMessage: null,
         errorMessage: null,
         editSuccess: false,
+        messageState: false,
       };
     }
     case "ERROR": {
@@ -50,6 +51,7 @@ export default function reducer(state = defaultState, action) {
           task: null,
           loading: false,
           successMessage: "Your task deleted !",
+          modalState: false,
         };
       }
       return {
@@ -58,6 +60,7 @@ export default function reducer(state = defaultState, action) {
         tasks: state.tasks.filter((task) => action.taskId !== task._id),
         loading: false,
         successMessage: "Your task deleted !",
+        modalState: false,
       };
     }
     case "ADD_TASKS": {
@@ -67,7 +70,7 @@ export default function reducer(state = defaultState, action) {
         tasks: [...state.tasks, action.res],
         modalState: true,
         loading: false,
-        successMessage: "Your tasks completed !",
+        successMessage: "Your task completed !",
       };
     }
 
@@ -115,7 +118,15 @@ export default function reducer(state = defaultState, action) {
         successMessage: "Your task edited !",
       };
     }
+    case "MESSAGE": {
+      return {
+        ...state,
 
+        loading: false,
+        messageState: action.mess,
+        successMessage: "Your message  sended !",
+      };
+    }
     default:
       return state;
   }

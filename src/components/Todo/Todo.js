@@ -7,15 +7,22 @@ import EditTaskModal from "../EditTaskModal/EditTaskModal";
 import { connect } from "react-redux";
 import { getTasks, deleteSelect, deleteTasks } from "../../store/actions";
 import Search from "../Search/Search";
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faUndo,
+  faSearch,
+  faCheck,
+  faPlusSquare,
+  faTrashAlt,
+  faTimes,
+} from "@fortawesome/free-solid-svg-icons";
 class Todo extends PureComponent {
   state = {
     showConfirm: false,
     selectedTasks: new Set(),
     showNewTaskModal: false,
     editModal: null,
-    search: true,
+    search: false,
   };
   componentDidMount() {
     this.props.getTasks();
@@ -41,6 +48,9 @@ class Todo extends PureComponent {
   deleteTask = (taskId) => {
     this.props.deleteTasks(taskId);
   };
+  searchState = () => {
+    this.setState({ search: !this.state.search });
+  };
   ////////////////////////////////////////////////////
 
   toggleTask = (taskId) => {
@@ -61,6 +71,10 @@ class Todo extends PureComponent {
     const { selectedTasks } = this.state;
     this.props.deleteSelect(selectedTasks);
   };
+  myReplace = () => {
+    this.props.getTasks();
+  };
+
   toggleConfirm = () => {
     // open and close modal for delete
     this.setState({ showConfirm: !this.state.showConfirm });
@@ -134,7 +148,14 @@ class Todo extends PureComponent {
               />
             </Col>
           </Row>
-          <Container style={{ margin: "5%  0%" }}>
+          <Container
+            xl={2}
+            lg={3}
+            md={4}
+            sm={6}
+            xs={8}
+            style={{ margin: "5%  0%" }}
+          >
             <Row>
               <Col>
                 <Button
@@ -143,13 +164,17 @@ class Todo extends PureComponent {
                   variant="primary "
                   // className="m-4"
                 >
-                  Add Task
+                  Add Task <FontAwesomeIcon icon={faPlusSquare} />
                 </Button>
               </Col>
 
               <Col>
-                <Button onClick={this.selectAll} variant="warning">
-                  Select all
+                <Button
+                  disabled={this.props.tasks.length < 2}
+                  onClick={this.selectAll}
+                  variant="warning"
+                >
+                  Select all <FontAwesomeIcon icon={faCheck} />
                 </Button>
               </Col>
               <Col>
@@ -158,7 +183,9 @@ class Todo extends PureComponent {
                   disabled={!selectedTasks.size}
                   variant="success"
                 >
-                  Deselect All
+                  <p>
+                    Deselect All <FontAwesomeIcon icon={faTimes} />
+                  </p>
                 </Button>
               </Col>
               <Col>
@@ -167,7 +194,17 @@ class Todo extends PureComponent {
                   variant="danger"
                   disabled={!selectedTasks.size}
                 >
-                  Delete Select
+                  Delete Select <FontAwesomeIcon icon={faTrashAlt} />
+                </Button>
+              </Col>
+              <Col>
+                <Button onClick={this.searchState} variant="warning">
+                  Search <FontAwesomeIcon icon={faSearch} />
+                </Button>
+              </Col>
+              <Col>
+                <Button onClick={this.myReplace} variant="primary">
+                  Replace <FontAwesomeIcon icon={faUndo} />
                 </Button>
               </Col>
             </Row>
@@ -188,7 +225,7 @@ class Todo extends PureComponent {
             editTask={() => this.editTask(null)}
           />
         )}
-        {search ? <Search /> : null}
+        {search && <Search searchToggle={this.searchState} search={search} />}
       </div>
     );
   }
@@ -201,15 +238,7 @@ const mapStateToProps = (state) => {
     editTaskSuccess: state.editTaskSuccess,
   };
 };
-// const mapDespatchToProps = (despatch) => {
-//   return {
-//     getTasks: () => {
-//       request("http://localhost:3001/task").then((tasks) => {
-//         despatch({ type: "GET_TASKS", tasks: tasks });
-//       });
-//     },
-//   };
-// };
+
 const mapDespatchToProps = {
   getTasks,
   deleteSelect,
