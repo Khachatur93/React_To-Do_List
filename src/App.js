@@ -18,7 +18,7 @@ function App({ loading, successMessage, errorMessage }) {
     if (successMessage) {
       toast.success(`${successMessage} `, {
         position: "bottom-left",
-        autoClose: 1400,
+        autoClose: 2000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
@@ -28,7 +28,7 @@ function App({ loading, successMessage, errorMessage }) {
     if (errorMessage) {
       toast.error(`${errorMessage} `, {
         position: "bottom-left",
-        autoClose: 1400,
+        autoClose: 2000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,

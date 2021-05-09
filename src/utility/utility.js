@@ -9,8 +9,14 @@ export function textTruncate(str) {
   return str.slice(0, 60) + "  ...";
 }
 export function titleTruncate(str) {
-  if (str.length < 10) {
+  if (str.length < 13) {
     return str;
   }
-  return str.slice(0, 10) + " ...";
+  return str.slice(0, 13) + " ...";
+}
+export function searchTextTruncate(str) {
+  if (str.length < 7) {
+    return str;
+  }
+  return str.slice(0, 7) + "  ...";
 }

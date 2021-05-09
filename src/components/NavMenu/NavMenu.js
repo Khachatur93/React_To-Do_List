@@ -5,7 +5,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import style from "./NavMenuStyles.module.css";
 export default function NavMenu() {
   return (
-    <Navbar bg="dark" variant="dark">
+    <Navbar bg="dark" variant="dark" style={{ position: "-webkit-sticky" }}>
       <NavLink className={style.home} to="/">
         ToDo List
       </NavLink>

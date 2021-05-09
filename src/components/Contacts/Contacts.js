@@ -1,14 +1,25 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Form, Button } from "react-bootstrap";
 import styles from "./style.module.css";
-
-export default function Contact() {
+import { connect } from "react-redux";
+import { message } from "../../store/actions";
+function Contact(props) {
   const [values, setValues] = useState({
     name: "",
     email: "",
     message: "",
   });
+  useEffect(() => {
+    if (props.messageState) {
+      setValues({
+        name: "",
+        email: "",
+        message: "",
+      });
+    }
+  }, [props.messageState]);
+
   const [error, setError] = useState({
     name: null,
     message: null,
@@ -46,27 +57,8 @@ export default function Contact() {
     const valuesExist = !valuesArr.some((el) => el === "");
 
     if (valuesExist && !errorExist) {
-      fetch("http://localhost:3001/form", {
-        method: "POST",
-        body: JSON.stringify(values),
-        headers: { "Content-Type": "application/json" },
-      })
-        .then(async (response) => {
-          const res = await response.json();
+      props.message(values);
 
-          if (response.status >= 400 && response.status < 600) {
-            if (res.error) {
-              throw res.error;
-            } else {
-              throw new Error("Something went wrong !");
-            }
-          }
-          console.log(" ok  ");
-        })
-
-        .catch((error) => {
-          console.log(error, "error");
-        });
       return;
     }
     if (!valuesExist && !errorExist) {
@@ -80,7 +72,7 @@ export default function Contact() {
   };
   return (
     <div style={{ padding: "8% 20% 0% 20%" }}>
-      <h1 style={{ marginLeft: "30%" }}> Contacts us</h1>
+      <h1 style={{ marginLeft: "30%" }}> Contact us</h1>
       <br />
       <Form>
         <Form.Group controlId="formBasicEmail">
@@ -126,3 +118,14 @@ export default function Contact() {
     </div>
   );
 }
+const mapStateToProps = (state) => {
+  return {
+    messageState: state.messageState,
+  };
+};
+
+const mapDespatchToProps = {
+  message,
+};
+
+export default connect(mapStateToProps, mapDespatchToProps)(Contact);

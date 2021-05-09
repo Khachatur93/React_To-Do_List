@@ -20,7 +20,7 @@ export default class Tasks extends PureComponent {
       <Card
         key={task._id}
         className={`${selected ? style.selected : ""}`}
-        style={{ height: "100%", boxShadow: "10px 10px 5px grey" }}
+        style={{ height: "100%", boxShadow: "5px 5px 4px grey" }}
       >
         <div className={style.tas}>
           <Card.Header>
@@ -30,11 +30,15 @@ export default class Tasks extends PureComponent {
               onChange={() => this.handleChange(task._id)}
               className="m-1"
             />
-            <Link to={`/task/${task._id}`}>{titleTruncate(task.title)}</Link>
+            <Link style={{ textDecoration: "none" }} to={`/task/${task._id}`}>
+              {titleTruncate(task.title)}
+            </Link>
           </Card.Header>
           <Card.Body>
-            <Card.Title>{formatDate(task.date)}</Card.Title>
-            <Card.Text rows={1}>{textTruncate(task.description)}</Card.Text>
+            <Card.Text>Data: {formatDate(task.date)}</Card.Text>
+            <Card.Title style={{ minHeight: "3vh" }}>
+              {textTruncate(task.description)}
+            </Card.Title>
             <Col>
               <Button
                 variant="warning"

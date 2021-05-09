@@ -98,7 +98,7 @@ class NewTask extends PureComponent {
           >
             Add
           </Button>
-          <Button variant="success" onClick={openNewTaskModal}>
+          <Button variant="danger" onClick={openNewTaskModal}>
             Cancel
           </Button>
         </Modal.Footer>
