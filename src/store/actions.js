@@ -25,7 +25,7 @@ export function getTask(taskId) {
   return (despatch) => {
     despatch({ type: types.PENDING });
 
-    request(`http://localhost:3001/task/${taskId}`, "GET")
+    request(`${apiHost}/task/${taskId}`, "GET")
       .then((task) => {
         despatch({ type: types.GET_TASK, task: task });
       })
@@ -38,7 +38,7 @@ export function newTask(newTask) {
   return (despatch) => {
     despatch({ type: types.PENDING });
 
-    request("http://localhost:3001/task", "POST", newTask)
+    request(`${apiHost}/task`, "POST", newTask)
       .then((res) => {
         despatch({ type: types.ADD_TASKS, res: res });
       })
@@ -51,7 +51,7 @@ export function deleteSelect(taskIds) {
   return (despatch) => {
     despatch({ type: types.PENDING });
 
-    request("http://localhost:3001/task", "PATCH", {
+    request(`${apiHost}/task`, "PATCH", {
       tasks: [...taskIds],
     })
       .then(() => {
@@ -66,7 +66,7 @@ export function deleteTasks(taskId, from) {
   return (despatch) => {
     despatch({ type: types.PENDING });
 
-    request(`http://localhost:3001/task/${taskId}`, "DELETE")
+    request(`${apiHost}/task/${taskId}`, "DELETE")
       .then(() => {
         despatch({ type: types.DELETE_TASKS, taskId: taskId, from });
 
@@ -83,7 +83,7 @@ export function handleSaveTask(editedTask, from) {
   return (despatch) => {
     despatch({ type: types.PENDING });
 
-    request(`http://localhost:3001/task/${editedTask._id}`, "PUT", editedTask)
+    request(`${apiHost}/task/${editedTask._id}`, "PUT", editedTask)
       .then((value) => {
         despatch({ type: types.EDIT_TASKS, value: value, from });
       })
@@ -97,7 +97,7 @@ export function message(values) {
   return (despatch) => {
     despatch({ type: types.PENDING });
 
-    request("http://localhost:3001/form", "POST", values)
+    request(`${apiHost}form", "POST`, values)
       .then(() => {
         despatch({ type: types.MESSAGE, mess: true });
       })
