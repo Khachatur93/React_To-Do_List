@@ -97,7 +97,7 @@ export function message(values) {
   return (despatch) => {
     despatch({ type: types.PENDING });
 
-    request(`${apiHost}`, "POST", values)
+    request(`${apiHost}/form`, "POST", values)
       .then(() => {
         despatch({ type: types.MESSAGE, mess: true });
       })

@@ -183,9 +183,7 @@ class Todo extends PureComponent {
                   disabled={!selectedTasks.size}
                   variant="success"
                 >
-                  <p>
-                    Deselect All <FontAwesomeIcon icon={faTimes} />
-                  </p>
+                  Deselect all <FontAwesomeIcon icon={faTimes} />
                 </Button>
               </Col>
               <Col>
