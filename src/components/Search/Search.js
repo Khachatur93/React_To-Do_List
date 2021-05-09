@@ -94,58 +94,57 @@ function Search({ getTasks, searchToggle }) {
         </Modal.Body>
         <Modal.Body>
           <InputGroup>
-            <DropdownButton
-              as={InputGroup.Append}
-              variant="outline-primary"
-              title={status.status ? status.label : "Status"}
-            >
-              {statusOptions.map((options, index) => (
-                <Dropdown.Item
-                  active={status.status === options.status}
-                  key={index}
-                  onClick={() => setStatus(options)}
-                >
-                  {options.label}
-                </Dropdown.Item>
-              ))}
-            </DropdownButton>
-            <DropdownButton
-              as={InputGroup.Append}
-              variant="outline-primary"
-              title={sort.status ? func.searchTextTruncate(sort.label) : "Sort"}
-              style={{ marginLeft: "5px", marginBottom: "20px" }}
-            >
-              {sortOptions.map((options, index) => (
-                <Dropdown.Item
-                  active={status.status === options.status}
-                  key={index}
-                  onClick={() => setSort(options)}
-                >
-                  {options.label}
-                </Dropdown.Item>
-              ))}
-            </DropdownButton>
-          </InputGroup>
-          {dateOptions.map((options, index) => (
-            <div key={index}>
-              {options.label}
+            {dateOptions.map((options, index) => (
+              <div style={{ marginBottom: "26px" }} key={index}>
+                <h6> {options.label}</h6>
 
-              <span style={{ marginLeft: "3%" }}>
                 <DatePicker
                   minDate={new Date()}
+                  title="date"
                   selected={dates[options.label]}
                   onChange={(value) => handleChangeDate(value, options.label)}
                 />
-              </span>
-            </div>
-          ))}
+              </div>
+            ))}
+          </InputGroup>
         </Modal.Body>
         <Modal.Footer>
+          <DropdownButton
+            as={InputGroup.Append}
+            variant="outline-primary"
+            title={sort.status ? func.searchTextTruncate(sort.label) : "Sort"}
+          >
+            {sortOptions.map((options, index) => (
+              <Dropdown.Item
+                active={status.status === options.status}
+                key={index}
+                onClick={() => setSort(options)}
+              >
+                {options.label}
+              </Dropdown.Item>
+            ))}
+          </DropdownButton>
+          <DropdownButton
+            as={InputGroup.Append}
+            variant="outline-primary"
+            title={status.status ? status.label : "Status"}
+          >
+            {statusOptions.map((options, index) => (
+              <Dropdown.Item
+                active={status.status === options.status}
+                key={index}
+                onClick={() => setStatus(options)}
+              >
+                {options.label}
+              </Dropdown.Item>
+            ))}
+          </DropdownButton>
           <Button
             onClick={() => {
               handleSubmit();
             }}
             variant="success"
+            style={{ marginLeft: "20%" }}
           >
             Search
           </Button>
@@ -157,10 +156,6 @@ function Search({ getTasks, searchToggle }) {
     </>
   );
 }
-
-// const mapStateToProps = (state) => {
-//   return {};
-// };
 
 const mapDespatchToProps = {
   getTasks,
