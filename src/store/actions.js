@@ -85,7 +85,12 @@ export function handleSaveTask(editedTask, from) {
 
     request(`${apiHost}/task/${editedTask._id}`, "PUT", editedTask)
       .then((value) => {
-        despatch({ type: types.EDIT_TASKS, value: value, from });
+        despatch({
+          type: types.EDIT_TASKS,
+          value: value,
+          from,
+          status: editedTask.status,
+        });
       })
       .catch((error) => {
         despatch({ type: types.ERROR, error: error.message });

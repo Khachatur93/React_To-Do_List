@@ -16,6 +16,7 @@ import {
   faTrashAlt,
   faTimes,
 } from "@fortawesome/free-solid-svg-icons";
+
 class Todo extends PureComponent {
   state = {
     showConfirm: false,
@@ -102,24 +103,19 @@ class Todo extends PureComponent {
   };
 
   render() {
-    const {
-      selectedTasks,
-      showConfirm,
-      showNewTaskModal,
-      editModal,
-      search,
-    } = this.state;
+    const { selectedTasks, showConfirm, showNewTaskModal, editModal, search } =
+      this.state;
 
     const { tasks } = this.props;
 
     let list = tasks.map((task) => {
       return (
         <Col
-          xl={2}
+          xl={3}
           lg={3}
           md={4}
           sm={6}
-          xs={12}
+          xs={13}
           style={{ margin: "  5px  0px" }}
           key={task._id}
         >
@@ -148,17 +144,11 @@ class Todo extends PureComponent {
               />
             </Col>
           </Row>
-          <Container
-            xl={2}
-            lg={3}
-            md={4}
-            sm={6}
-            xs={8}
-            style={{ margin: "5%  0%" }}
-          >
+          <Container style={{ margin: "5%  0%" }}>
             <Row>
               <Col>
                 <Button
+                  style={{ marginRight: "2%" }}
                   disabled={!!selectedTasks.size}
                   onClick={this.openNewTaskModal}
                   variant="primary "
@@ -166,42 +156,47 @@ class Todo extends PureComponent {
                 >
                   Add Task <FontAwesomeIcon icon={faPlusSquare} />
                 </Button>
-              </Col>
 
-              <Col>
                 <Button
+                  className="m-3"
                   disabled={this.props.tasks.length < 2}
                   onClick={this.selectAll}
                   variant="warning"
                 >
                   Select all <FontAwesomeIcon icon={faCheck} />
                 </Button>
-              </Col>
-              <Col>
+
                 <Button
+                  className="m-3"
                   onClick={this.deselectAll}
                   disabled={!selectedTasks.size}
                   variant="success"
                 >
                   Deselect all <FontAwesomeIcon icon={faTimes} />
                 </Button>
-              </Col>
-              <Col>
+
                 <Button
+                  className="m-3"
                   onClick={this.toggleConfirm}
                   variant="danger"
                   disabled={!selectedTasks.size}
                 >
                   Delete Select <FontAwesomeIcon icon={faTrashAlt} />
                 </Button>
-              </Col>
-              <Col>
-                <Button onClick={this.searchState} variant="warning">
+
+                <Button
+                  className="m-3"
+                  onClick={this.searchState}
+                  variant="warning"
+                >
                   Search <FontAwesomeIcon icon={faSearch} />
                 </Button>
-              </Col>
-              <Col>
-                <Button onClick={this.myReplace} variant="primary">
+
+                <Button
+                  className="m-3"
+                  onClick={this.myReplace}
+                  variant="primary"
+                >
                   Replace <FontAwesomeIcon icon={faUndo} />
                 </Button>
               </Col>
