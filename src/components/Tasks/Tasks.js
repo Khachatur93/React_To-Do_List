@@ -50,12 +50,15 @@ class Tasks extends PureComponent {
             </Link>
           </Card.Header>
           <Card.Body>
-            <Card.Text>Data: {formatDate(task.date)}</Card.Text>
             <Card.Title style={{ minHeight: "3vh" }}>
               {textTruncate(task.description)}
             </Card.Title>
             <br />
-            <Card.Text>Status: {task.status}</Card.Text>
+            <Card.Text>
+              Data: {formatDate(task.date)}
+              <br />
+              Status: {task.status}
+            </Card.Text>
 
             <Col>
               {task.status === "active" ? (

@@ -34,6 +34,22 @@ export default function NavMenu() {
         >
           Contacts
         </NavLink>
+        <NavLink
+          className={style.navStyle}
+          activeClassName={style.active}
+          to="/Register"
+          exact
+        >
+          Register
+        </NavLink>
+        <NavLink
+          className={style.navStyle}
+          activeClassName={style.active}
+          to="/Login"
+          exact
+        >
+          Login
+        </NavLink>
       </Nav>
     </Navbar>
   );

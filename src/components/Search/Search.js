@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { connect } from "react-redux";
 import * as func from "../../utility/utility";
 import DatePicker from "react-datepicker";
-import { formatDate } from "../../utility/utility";
 import { getTasks } from "../../store/actions";
 import "react-datepicker/dist/react-datepicker.css";
 import {
@@ -68,7 +67,7 @@ function Search({ getTasks, searchToggle }) {
     for (let key in dates) {
       const value = dates[key];
       if (value) {
-        const date = formatDate(value.toISOString());
+        const date = value.toLocaleDateString();
         params[key] = date;
       }
     }
