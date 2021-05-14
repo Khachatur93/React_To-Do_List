@@ -111,3 +111,16 @@ export function message(values) {
       });
   };
 }
+export function register(values) {
+  return (despatch) => {
+    despatch({ type: types.PENDING });
+
+    request(`${apiHost}/user`, "POST", values)
+      .then(() => {
+        despatch({ type: types.REGISTER, reg: true });
+      })
+      .catch((error) => {
+        despatch({ type: types.ERROR, error: error.message });
+      });
+  };
+}

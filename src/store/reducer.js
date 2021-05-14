@@ -9,6 +9,7 @@ const defaultState = {
   errorMessage: null,
   editSuccess: false,
   messageState: false,
+  registerState: false,
 };
 
 export default function reducer(state = defaultState, action) {
@@ -25,6 +26,7 @@ export default function reducer(state = defaultState, action) {
         errorMessage: null,
         editSuccess: false,
         messageState: false,
+        registerState: false,
       };
     }
     case "ERROR": {
@@ -133,6 +135,15 @@ export default function reducer(state = defaultState, action) {
         loading: false,
         messageState: action.mess,
         successMessage: "Your message  sended !",
+      };
+    }
+    case "REGISTER": {
+      return {
+        ...state,
+
+        loading: false,
+        registerState: action.reg,
+        successMessage: "Your register  is completed !",
       };
     }
     default:

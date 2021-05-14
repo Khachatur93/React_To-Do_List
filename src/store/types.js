@@ -15,3 +15,5 @@ export const DELETE_SELECTED_TASKS = "DELETE_SELECTED_TASKS";
 export const EDIT_TASKS = "EDIT_TASKS";
 
 export const MESSAGE = "MESSAGE";
+
+export const REGISTER = "REGISTER";

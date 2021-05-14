@@ -13,6 +13,8 @@ import { connect } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { history } from "./helpers/history";
+import Register from "../src/components/Register/Register";
+import Login from "../src/components/Login/Login";
 function App({ loading, successMessage, errorMessage }) {
   useEffect(() => {
     if (successMessage) {
@@ -47,6 +49,9 @@ function App({ loading, successMessage, errorMessage }) {
           <Route path="/Contacts" component={Contacts} exact={true} />
           <Route path="/task/:taskId" component={SingleTask} exact={true} />
           <Route path="/error-404" component={Error404} exact={true} />
+          <Route path="/Register" component={Register} exact={true} />
+          <Route path="/Login" component={Login} exact={true} />
+
           <Redirect to="/error-404" />
         </Switch>
       </Router>
