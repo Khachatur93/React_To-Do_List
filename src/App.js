@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-// import Counter from "./demo/Counter";
 import { Router, Switch, Route, Redirect } from "react-router-dom";
 import Todo from "./components/Todo/Todo";
 import Contacts from "./components/Contacts/Contacts";
@@ -15,6 +14,8 @@ import "react-toastify/dist/ReactToastify.css";
 import { history } from "./helpers/history";
 import Register from "../src/components/Register/Register";
 import Login from "../src/components/Login/Login";
+import AutRout from "../src/components/AutRout.js";
+
 function App({ loading, successMessage, errorMessage }) {
   useEffect(() => {
     if (successMessage) {
@@ -44,13 +45,28 @@ function App({ loading, successMessage, errorMessage }) {
       <Router history={history}>
         <NavMenu />
         <Switch>
-          <Route path="/" component={Todo} exact={true} />
+          <AutRout path="/" component={Todo} exact={true} type="private" />
           <Route path="/About" component={About} exact={true} />
           <Route path="/Contacts" component={Contacts} exact={true} />
-          <Route path="/task/:taskId" component={SingleTask} exact={true} />
-          <Route path="/error-404" component={Error404} exact={true} />
-          <Route path="/Register" component={Register} exact={true} />
-          <Route path="/Login" component={Login} exact={true} />
+          <AutRout
+            path="/task/:taskId"
+            component={SingleTask}
+            exact={true}
+            type="private"
+          />
+          <Route
+            path="/error-404"
+            component={Error404}
+            exact={true}
+            type="public"
+          />
+          <AutRout
+            path="/Register"
+            component={Register}
+            exact={true}
+            type="public"
+          />
+          <AutRout path="/Login" component={Login} exact={true} type="public" />
 
           <Redirect to="/error-404" />
         </Switch>

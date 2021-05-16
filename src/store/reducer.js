@@ -1,3 +1,5 @@
+import { checkLoginStatus } from "../helpers/auth";
+
 const defaultState = {
   tasks: [],
   task: null,
@@ -10,6 +12,8 @@ const defaultState = {
   editSuccess: false,
   messageState: false,
   registerState: false,
+  loginState: false,
+  isAuthentic: checkLoginStatus(),
 };
 
 export default function reducer(state = defaultState, action) {
@@ -27,6 +31,7 @@ export default function reducer(state = defaultState, action) {
         editSuccess: false,
         messageState: false,
         registerState: false,
+        loginState: false,
       };
     }
     case "ERROR": {
@@ -144,6 +149,16 @@ export default function reducer(state = defaultState, action) {
         loading: false,
         registerState: action.reg,
         successMessage: "Your register  is completed !",
+      };
+    }
+    case "LOGIN": {
+      return {
+        ...state,
+
+        loading: false,
+        loginState: action.log,
+        successMessage: "You login !",
+        isAuthentic: true,
       };
     }
     default:

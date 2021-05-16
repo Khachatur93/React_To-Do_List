@@ -12,9 +12,9 @@ function Register(props) {
     password: "",
     confirmPassword: "",
     name: "",
-    surName: "",
+    surname: "",
   });
-
+  console.log("values", values);
   useEffect(() => {
     if (props.registerState) {
       setValues({
@@ -22,7 +22,7 @@ function Register(props) {
         password: "",
         confirmPassword: "",
         name: "",
-        surName: "",
+        surname: "",
       });
     }
   }, [props.registerState]);
@@ -36,7 +36,7 @@ function Register(props) {
   });
 
   const handleSubmit = () => {
-    const { email, password, confirmPassword, name, surName } = values;
+    const { email, password, confirmPassword, name, surname } = values;
     let valid = true;
 
     let passwordMessage = null;
@@ -54,7 +54,7 @@ function Register(props) {
     setErrors({
       email: email ? null : "Email is required",
       name: name ? null : "Name is required",
-      surName: surName ? null : "Surname is required",
+      surname: surname ? null : "surname is required",
       confirmPassword: confirmPassword ? null : "Confirm is required",
 
       password: passwordMessage,
@@ -110,14 +110,14 @@ function Register(props) {
           />
         </Form.Group>
         <br />
-        <Form.Group controlId="formBasicSurName">
-          <Form.Text className="text-danger">{errors.surName}</Form.Text>
+        <Form.Group controlId="formBasicsurname">
+          <Form.Text className="text-danger">{errors.surname}</Form.Text>
           <Form.Control
-            className={errors.surName ? styles.invalid : ""}
+            className={errors.surname ? styles.invalid : ""}
             type="Text"
             placeholder="Enter your surname"
-            name="surName"
-            value={values.surName}
+            name="surname"
+            value={values.surname}
             onChange={handleChange}
           />
         </Form.Group>

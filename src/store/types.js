@@ -17,3 +17,7 @@ export const EDIT_TASKS = "EDIT_TASKS";
 export const MESSAGE = "MESSAGE";
 
 export const REGISTER = "REGISTER";
+
+export const LOGIN = "LOGIN";
+
+export const LOGOUT = "LOGOUT";
