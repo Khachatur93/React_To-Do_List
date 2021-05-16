@@ -8,7 +8,7 @@ import { connect } from "react-redux";
 function NavMenu({ isAuthentic }) {
   return (
     <Navbar bg="dark" variant="dark" style={{ position: "-webkit-sticky" }}>
-      <NavLink className={style.home} to="/">
+      <NavLink className={style.home} to="/" exact>
         ToDo List
       </NavLink>
 
