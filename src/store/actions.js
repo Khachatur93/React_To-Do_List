@@ -1,8 +1,9 @@
 import request from "../helpers/request.js";
 import * as types from "./types";
 import { history } from "../helpers/history";
-const apiHost = process.env.REACT_APP_API_HOST;
+import { saveToken } from "../helpers/auth";
 
+const apiHost = process.env.REACT_APP_API_HOST;
 export function getTasks(params = {}) {
   return (despatch) => {
     const query = Object.entries(params)
@@ -131,7 +132,7 @@ export function login(values) {
 
     request(`${apiHost}/user/sign-in`, "POST", values)
       .then((res) => {
-        localStorage.setItem("token", JSON.stringify(res));
+        saveToken(res);
 
         despatch({ type: types.LOGIN, log: true });
         history.push("/");
