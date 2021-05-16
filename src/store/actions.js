@@ -118,6 +118,23 @@ export function register(values) {
     request(`${apiHost}/user`, "POST", values)
       .then(() => {
         despatch({ type: types.REGISTER, reg: true });
+        history.push("/login");
+      })
+      .catch((error) => {
+        despatch({ type: types.ERROR, error: error.message });
+      });
+  };
+}
+export function login(values) {
+  return (despatch) => {
+    despatch({ type: types.PENDING });
+
+    request(`${apiHost}/user/sign-in`, "POST", values)
+      .then((res) => {
+        localStorage.setItem("token", JSON.stringify(res));
+
+        despatch({ type: types.LOGIN, log: true });
+        history.push("/");
       })
       .catch((error) => {
         despatch({ type: types.ERROR, error: error.message });
