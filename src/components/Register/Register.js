@@ -14,7 +14,6 @@ function Register(props) {
     name: "",
     surname: "",
   });
-  console.log("values", values);
   useEffect(() => {
     if (props.registerState) {
       setValues({
@@ -56,14 +55,11 @@ function Register(props) {
       name: name ? null : "Name is required",
       surname: surname ? null : "surname is required",
       confirmPassword: confirmPassword ? null : "Confirm is required",
-
       password: passwordMessage,
-      // password: password ? null : "Password is required",
     });
 
     if (valid) {
       props.register(values);
-      console.log(values);
     }
   };
 

@@ -164,6 +164,7 @@ export default function reducer(state = defaultState, action) {
     case "LOGOUT": {
       return {
         ...state,
+        loading: false,
         isAuthentic: false,
       };
     }
