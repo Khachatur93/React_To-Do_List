@@ -101,7 +101,7 @@ function Login(props) {
         </Button>
       </Form>
       <p>
-        <Link to="/login">Already registered? Try to login.</Link>
+        <Link to="/login">If you have not registered? Try to Register.</Link>
       </p>
     </div>
   );
