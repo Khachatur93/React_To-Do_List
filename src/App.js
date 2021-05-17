@@ -46,6 +46,8 @@ function App({ loading, successMessage, errorMessage }) {
         <NavMenu />
         <Switch>
           <AutRout path="/" component={Todo} exact={true} type="private" />
+          <AutRout path="/home" component={Todo} exact={true} type="private" />
+
           <Route path="/About" component={About} exact={true} />
           <Route path="/Contacts" component={Contacts} exact={true} />
           <AutRout
@@ -66,6 +68,7 @@ function App({ loading, successMessage, errorMessage }) {
             exact={true}
             type="public"
           />
+
           <AutRout path="/Login" component={Login} exact={true} type="public" />
 
           <Redirect to="/error-404" />
