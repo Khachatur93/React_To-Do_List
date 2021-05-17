@@ -15,6 +15,7 @@ export function getTasks(params = {}) {
 
     request(`${apiHost}/task?${query}`, "GET")
       .then((tasks) => {
+        if (!tasks) return;
         despatch({ type: types.GET_TASKS, tasks: tasks });
       })
       .catch((error) => {
@@ -29,6 +30,8 @@ export function getTask(taskId) {
 
     request(`${apiHost}/task/${taskId}`, "GET")
       .then((task) => {
+        if (!task) return;
+
         despatch({ type: types.GET_TASK, task: task });
       })
       .catch((error) => {
@@ -42,6 +45,8 @@ export function newTask(newTask) {
 
     request(`${apiHost}/task`, "POST", newTask)
       .then((res) => {
+        if (!res) return;
+
         despatch({ type: types.ADD_TASKS, res: res });
       })
       .catch((error) => {
@@ -56,7 +61,9 @@ export function deleteSelect(taskIds) {
     request(`${apiHost}/task`, "PATCH", {
       tasks: [...taskIds],
     })
-      .then(() => {
+      .then((res) => {
+        if (!res) return;
+
         despatch({ type: types.DELETE_SELECTED_TASKS, taskIds });
       })
       .catch((error) => {
@@ -69,7 +76,9 @@ export function deleteTasks(taskId, from) {
     despatch({ type: types.PENDING });
 
     request(`${apiHost}/task/${taskId}`, "DELETE")
-      .then(() => {
+      .then((res) => {
+        if (!res) return;
+
         despatch({ type: types.DELETE_TASKS, taskId: taskId, from });
 
         if (from === "single") {
@@ -87,6 +96,8 @@ export function handleSaveTask(editedTask, from) {
 
     request(`${apiHost}/task/${editedTask._id}`, "PUT", editedTask)
       .then((value) => {
+        if (!value) return;
+
         despatch({
           type: types.EDIT_TASKS,
           value: value,
@@ -105,7 +116,9 @@ export function message(values) {
     despatch({ type: types.PENDING });
 
     request(`${apiHost}/form`, "POST", values)
-      .then(() => {
+      .then((res) => {
+        if (!res) return;
+
         despatch({ type: types.MESSAGE, mess: true });
       })
       .catch((error) => {

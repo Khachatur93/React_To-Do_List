@@ -161,6 +161,12 @@ export default function reducer(state = defaultState, action) {
         isAuthentic: true,
       };
     }
+    case "LOGOUT": {
+      return {
+        ...state,
+        isAuthentic: false,
+      };
+    }
     default:
       return state;
   }

@@ -1,14 +1,16 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import { Navbar, Nav, Button } from "react-bootstrap";
+import { Navbar, Nav } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import style from "./NavMenuStyles.module.css";
 import { connect } from "react-redux";
+import { logout } from "../../helpers/auth";
+import { Link } from "react-router-dom";
 
 function NavMenu({ isAuthentic }) {
   return (
     <Navbar bg="dark" variant="dark" style={{ position: "-webkit-sticky" }}>
-      <NavLink className={style.home} to="/" exact>
+      <NavLink className={style.home} to="/home" exact>
         ToDo List
       </NavLink>
 
@@ -42,7 +44,9 @@ function NavMenu({ isAuthentic }) {
         </NavLink>
 
         {isAuthentic ? (
-          <Button>Log out</Button>
+          <Link className={style.navStyle} onClick={() => logout()} to="/login">
+            Log out
+          </Link>
         ) : (
           <>
             {" "}
