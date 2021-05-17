@@ -2,6 +2,7 @@ import request from "../helpers/request.js";
 import * as types from "./types";
 import { history } from "../helpers/history";
 import { saveToken } from "../helpers/auth";
+import requestWithoutToken from "../helpers/auth";
 
 const apiHost = process.env.REACT_APP_API_HOST;
 export function getTasks(params = {}) {
@@ -116,7 +117,7 @@ export function register(values) {
   return (despatch) => {
     despatch({ type: types.PENDING });
 
-    request(`${apiHost}/user`, "POST", values)
+    requestWithoutToken(`${apiHost}/user`, "POST", values)
       .then(() => {
         despatch({ type: types.REGISTER, reg: true });
         history.push("/login");
@@ -130,7 +131,7 @@ export function login(values) {
   return (despatch) => {
     despatch({ type: types.PENDING });
 
-    request(`${apiHost}/user/sign-in`, "POST", values)
+    requestWithoutToken(`${apiHost}/user/sign-in`, "POST", values)
       .then((res) => {
         saveToken(res);
 
