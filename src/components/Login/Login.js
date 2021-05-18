@@ -100,6 +100,7 @@ function Login(props) {
           Login
         </Button>
       </Form>
+      <br />
       <p>
         <Link to="/login">If you have not registered? Try to Register.</Link>
       </p>

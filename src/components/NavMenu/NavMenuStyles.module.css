@@ -18,5 +18,15 @@
   color: white;
 }
 .active {
+  color: rgb(34, 145, 34);
+}
+.navStyle2 {
+  text-decoration: none;
+  font-size: 18px;
+  margin-left: 15px;
   color: red;
+}
+.navStyle2:hover {
+  color: red !important;
+  cursor: pointer;
 }

@@ -44,7 +44,11 @@ function NavMenu({ isAuthentic }) {
         </NavLink>
 
         {isAuthentic ? (
-          <Link className={style.navStyle} onClick={() => logout()} to="/login">
+          <Link
+            className={style.navStyle2}
+            onClick={() => logout()}
+            to="/login"
+          >
             Log out
           </Link>
         ) : (

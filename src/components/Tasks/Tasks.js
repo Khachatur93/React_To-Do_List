@@ -50,7 +50,7 @@ class Tasks extends PureComponent {
             </Link>
           </Card.Header>
           <Card.Body>
-            <Card.Title style={{ minHeight: "3vh" }}>
+            <Card.Title style={{ minHeight: "15vh" }}>
               {textTruncate(task.description)}
             </Card.Title>
             <br />
